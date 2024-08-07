@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8">
+<saveData>
+	<CashFlow>
+		<type>Income</type>
+		<title>Paychecl</title>
+		<desc>PRB + RPAC</desc>
+		<freq>Biweekly</freq>
+		<amount>1000.0</amount>
+	</CashFlow>
+</saveData>
