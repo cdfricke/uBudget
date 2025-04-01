@@ -3,7 +3,7 @@
 # Lateste Revision: 7-Aug-2024
 # Description: Helper functions for uBudget program
 
-from py.objects import *
+from modules.objects import *
 import os
 import xml.etree.ElementTree as ET
 
