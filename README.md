@@ -1,4 +1,4 @@
-# \u03BCBudget
+# U+03BC Budget
 ### by Connor Fricke
 ---
 "u-Budget" / "mu-Budget" / "micro-Budget"
