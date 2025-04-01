@@ -15,6 +15,9 @@ class CashFlow:
         self.frequency = ""
         self.amount = 0.00
 
+    def __str__(self) -> str:
+        return f"({self.type}) {self.title} occurring {self.freq} -> ${self.amount}"
+
     def giveType(self, type: str) -> None:
         if (self.type != ""):
             if (input("Are you sure you want to overwrite cashflow type? Y/N\n>>> ") == "Y"):
@@ -70,9 +73,19 @@ class CashFlow:
         self.freq = freq.upper()
         self.amount = amount
 
-    def print(self) -> None:
-        print(f"({self.type}) {self.title} occurring {self.freq} -> ${self.amount}")
 
+MAINMENU =  """
+            ------------------(\u03BCBUDGET)------------------
+
+            1. Start New Budget
+            2. Load Saved Budget
+            3. Show Budget Details
+            4. Save Budget
+            5. List Saved Budgets
+            6. Quit
+
+            ---------------------------------------------
+            """
     
 # *** ACCEPTABLE VALUES FOR CASHFLOW TYPE AND FREQUENCY ***
 cfTypes = ["INCOME", "EXPENSE"]

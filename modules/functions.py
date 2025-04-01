@@ -78,70 +78,16 @@ def sumFourWeeks(data: list[CashFlow]) -> tuple:
 
 # ** IO **
 
-def save(data: list[CashFlow]):
-    """
-    Encode save date and time in file name, then save a list of CashFlow objects
-    in XML format to said file. Takes one parameter which should be a list of
-    CashFlow type objects.
-    """
-    if (input("Do you want to overwrite current save? (Y/N)\n>>> ") == "Y"):
-        filename = "savefiles/" + "savedFlows" + ".xml"
-        root = ET.Element("saveData")
-        for cashFlow in data:
-            cashFlowItem = ET.SubElement(root, "CashFlow")
-            titleItem = ET.SubElement(cashFlowItem, "title")
-            titleItem.text = cashFlow.title
-            typeItem = ET.SubElement(cashFlowItem, "type")
-            typeItem.text = cashFlow.type
-            descItem = ET.SubElement(cashFlowItem, "desc")
-            descItem.text = cashFlow.desc
-            freqItem = ET.SubElement(cashFlowItem, "freq")
-            freqItem.text = cashFlow.freq
-            amountItem = ET.SubElement(cashFlowItem, "amount")
-            amountItem.text = str(cashFlow.amount)
-        tree = ET.ElementTree(root)
-        ET.indent(tree, space='\t', level=0)
-        tree.write(filename, encoding="UTF-8")
-
-
-def MainMenu() -> str:
-    return  """
-            ------------------(\u03BCBUDGET)------------------
-
-            1. Start New Budget Planner
-            2. Load Saved Budget
-            3. Quit
-
-            ---------------------------------------------
-            """
 def clear():
     if (os.name == "nt"):  # windows
         os.system("cls")
     else:   # mac / linux
         os.system("clear")
 
-
-
-# ** MAIN MENU FUNCTIONS **
-def StartNew():
-    clear() # clear screen FIRST
-
-    allCashFlows = []
-    addFlows(allCashFlows)
-
-    while (input("Return to main menu? (Y/N)\n>>> ") != "Y"):
-        addFlows(allCashFlows)
-    save(allCashFlows)
-    clear()
-
-
-def LoadSaved():
-    print("Loading Saved Budget...")
-    
-    tree = ET.parse('savefiles/savedFlows.xml')
-    saveData = tree.getroot()
-    for cashFlow in saveData:
-        for child in cashFlow:
-            print(child.tag, child.attrib)
-    
-    
+def getSavedBudgets() -> list[str]:
+    budgets = []
+    path = "savefiles/"
+    files = os.listdir(path)
+    for file in files:
+        budgets.append(file[:-4])
+    return budgets

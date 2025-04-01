@@ -1,9 +1,0 @@
-<saveData>
-	<CashFlow>
-		<title>Paycheck</title>
-		<type>INCOME</type>
-		<desc>connor's stipend</desc>
-		<freq>WEEKLY</freq>
-		<amount>700.0</amount>
-	</CashFlow>
-</saveData>
