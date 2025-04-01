@@ -22,7 +22,7 @@ class CashFlow:
             else:
                 print("Cashflow type was not changed.")
         else:
-            self.type = type
+            self.type = type.upper()
 
     def giveTitle(self, title: str) -> None:
         if (self.title != ""):
@@ -31,7 +31,7 @@ class CashFlow:
             else:
                 print(f"{self.type} title was not changed.")
         else:
-            self.title = title
+            self.title = title.upper()
 
     def giveDesc(self, desc: str) -> None:
         if (self.desc != ""):
@@ -40,7 +40,7 @@ class CashFlow:
             else:
                 print(f"{self.type} description was not changed.")
         else:
-            self.desc = desc
+            self.desc = desc.upper()
 
     def giveFreq(self, freq: str) -> None:
         if (self.desc != ""):
@@ -49,7 +49,7 @@ class CashFlow:
             else:
                 print(f"{self.type} frequency was not changed.")
         else:
-            self.freq = freq
+            self.freq = freq.upper()
 
     def giveAmount(self, amount: float) -> None:
         if (self.cost != 0.00):
@@ -64,10 +64,10 @@ class CashFlow:
         """
         Assigns all class data members without checking for overwrites.
         """
-        self.type = type
+        self.type = type.upper()
         self.title = title
         self.desc = desc
-        self.freq = freq
+        self.freq = freq.upper()
         self.amount = amount
 
     def print(self) -> None:
@@ -75,6 +75,6 @@ class CashFlow:
 
     
 # *** ACCEPTABLE VALUES FOR CASHFLOW TYPE AND FREQUENCY ***
-cfTypes = ["Income", "Expense"]
-cfFreqs = ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"]
+cfTypes = ["INCOME", "EXPENSE"]
+cfFreqs = ["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "YEARLY"]
         
