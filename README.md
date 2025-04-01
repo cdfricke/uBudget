@@ -1,4 +1,4 @@
-# uBudget
+# μBudget
 ### by Connor Fricke
 ---
 "u-Budget" / "mu-Budget" / "micro-Budget"
