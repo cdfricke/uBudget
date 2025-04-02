@@ -1,7 +1,34 @@
 # Programmer: Connor Fricke (cd.fricke23@gmail.com)
-# File: miniBudget.py
-# Latest Revision: 10-July-2024
-# Desc: Main script for uBudget budgeting program.
+# File: objects.py
+# Latest Revision: 1-April-2025
+# Desc: Necessary global objects and classes for uBudget program
+
+MAINMENU =  """
+            ------------------(\u03BCBUDGET)------------------
+
+            1. Create
+            2. Load
+            3. Edit
+            4. Show Details
+            5. Save
+            6. Quit
+
+            ---------------------------------------------
+            """
+    
+# *** ACCEPTABLE VALUES FOR CASHFLOW TYPE AND FREQUENCY ***
+cfTypes = ["INCOME", "EXPENSE"]
+cfFreqs = ["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "YEARLY"]
+
+# ** ANSI escape sequences (FOR COLOR OUTPUT)
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BLUE = '\033[34m'
+MAGENTA = '\033[35m'
+CYAN = '\033[36m'
+WHITE = '\033[37m'
+RESET = '\033[0m' # Reset to default color
 
 # *** MAIN OBJECT OF PROGRAM FOR DESCRIBING CASH FLOW ***
 class CashFlow:
@@ -15,8 +42,19 @@ class CashFlow:
         self.frequency = ""
         self.amount = 0.00
 
+    def __init__(self, type: str, title: str, desc: str, freq: str, amount: float) -> None:
+        """
+        Assigns all class data members without checking for overwrites.
+        """
+        self.type = type.upper()
+        self.title = title
+        self.desc = desc
+        self.freq = freq.upper()
+        self.amount = amount
+
     def __str__(self) -> str:
-        return f"({self.type}) {self.title} occurring {self.freq} -> ${self.amount}"
+        COLOR = GREEN if self.type == "INCOME" else RED
+        return f"{COLOR}({self.type}){RESET} {self.title} occurring {self.freq} -> {COLOR}${self.amount}{RESET}"
 
     def giveType(self, type: str) -> None:
         if (self.type != ""):
@@ -62,32 +100,4 @@ class CashFlow:
                 print(f"{self.type} amount was not changed.")
         else:
             self.amount = amount
-
-    def loadValues(self, type: str, title: str, desc: str, freq: str, amount: float):
-        """
-        Assigns all class data members without checking for overwrites.
-        """
-        self.type = type.upper()
-        self.title = title
-        self.desc = desc
-        self.freq = freq.upper()
-        self.amount = amount
-
-
-MAINMENU =  """
-            ------------------(\u03BCBUDGET)------------------
-
-            1. Start New Budget
-            2. Load Saved Budget
-            3. Show Budget Details
-            4. Save Budget
-            5. List Saved Budgets
-            6. Quit
-
-            ---------------------------------------------
-            """
-    
-# *** ACCEPTABLE VALUES FOR CASHFLOW TYPE AND FREQUENCY ***
-cfTypes = ["INCOME", "EXPENSE"]
-cfFreqs = ["DAILY", "WEEKLY", "BIWEEKLY", "MONTHLY", "YEARLY"]
         

@@ -10,76 +10,142 @@ class uBudget:
     def __init__(self):
         self.__cashFlows: list[CashFlow] = []
         self.__activeBudget: str = "NO ACTIVE BUDGET"
+        self.__unsavedChanges: bool = False
 
     def Prompt(self):
         print(MAINMENU)
-        print(f"Budget: {self.__activeBudget}")
+        if self.__unsavedChanges:
+            print(f"Budget: {self.__activeBudget} {RED}(unsaved){RESET}")
+        else:
+            print(f"Budget: {self.__activeBudget}")
         return int(input(">>> "))
     
     def run(self):
         clear()
         menuSelect = self.Prompt()
 
-        while(menuSelect != 6):
+        while(True):
             if (menuSelect == 1):
                 self.StartNew()         # RUN SUB-APP
-                clear()
                 menuSelect = self.Prompt()
             elif (menuSelect == 2):
                 self.LoadSaved()        # RUN SUB-APP
-                clear()
                 menuSelect = self.Prompt()
             elif (menuSelect == 3):
-                self.DisplayCFInfo()    # RUN SUB-APP
-                clear()
+                self.EditBudget()       # RUN SUB-APP
                 menuSelect = self.Prompt()
             elif (menuSelect == 4):
-                self.SaveBudget()       # RUN SUB-APP
-                clear()
+                self.DisplayCFInfo()    # RUN SUB-APP
                 menuSelect = self.Prompt()
             elif (menuSelect == 5):
-                self.ShowSavedBudgets() # RUN SUB-APP
+                self.SaveBudget()       # RUN SUB-APP
                 menuSelect = self.Prompt()
+            elif (menuSelect == 6):
+                if input("Are you sure you want to quit? (Y/N)\n>>> ") == "Y":
+                    break
+                clear()
+                menuSelect = self.Prompt()
+            else:
+                clear()
+                menuSelect = self.Prompt()
+        
+        clear()
+        return
 
     # ** AVAILABLE SUB-APPLICATIONS **
 
     def StartNew(self):
-        clear() # clear screen FIRST
+        clear()
 
-        print("! WARNING ! This action will erase the active budget.")
-        if (input("Are you sure you want to continue? (Y/N)\n>>> ") != "Y"):
-            print("Failed to create new budget.")
-            input("Press enter to return to main menu.")
-            clear()
-            return
-
+        # if active budget contains data
+        if len(self.__cashFlows) > 0:
+            print("! WARNING ! This action will overwrite the active budget.")
+            if (input("Are you sure you want to continue? (Y/N)\n>>> ") != "Y"):
+                print("Failed to create new budget.")
+                input("Press enter to return to main menu.")
+                clear()
+                return
+            
+        clear()
+        
+        # get name for new budget
+        newName = input("Enter budget name.\n>>> ")
+        while (newName == self.__activeBudget):
+            print("This budget is already active!")
+            newName = input("Enter budget name.\n>>> ")
+        
+        # start new and add cash flows
+        self.__cashFlows = []
         addFlows(self.__cashFlows)
+        
+        # if cash flows were added
+        if len(self.__cashFlows) > 0:
+            self.__unsavedChanges = True
+    
+        clear()
+        return
+    
+    def EditBudget(self):
+        clear()
+        
+        # if current budget is empty
+        if len(self.__cashFlows) == 0:
+            print("You must first create or load a budget!")
+            input("Press enter to return to the main menu.")
+            return
+        
+        oldLength = len(self.__cashFlows)
 
-        while (input("Return to main menu? (Y/N)\n>>> ") != "Y"):
-            addFlows(self.__cashFlows)
-        self.__activeBudget = input("Enter budget name.\n>>> ")
-        print("Successfully created budget.")
-        input("Press enter to return to main menu.")
+        # add flows until user is finished editing
+        listFlows(self.__cashFlows)
+        addFlows(self.__cashFlows)
+        
+        # if new data is present
+        if len(self.__cashFlows) > oldLength:
+            self.__unsavedChanges = True
+
         clear()
         return
 
     def LoadSaved(self):
         clear()
+
+        # if active budget contains data
+        if len(self.__cashFlows) > 0:
+            print("! WARNING ! This action will overwrite the active budget.")
+            if (input("Are you sure you want to continue? (Y/N)\n>>> ") != "Y"):
+                print("Failed to load budget.")
+                input("Press enter to return to main menu.")
+                clear()
+                return
+        
+        clear()
+
+        # if no files exist in savefiles
         if len(getSavedBudgets()) == 0:
             print("No budgets available to load.")
             input("Press enter to return to main menu.")
             clear()
             return
         
+        # list saved files
         print("--- SAVED BUDGETS ---")
         i = 1
         for name in getSavedBudgets():
             print(f"{i}. {name}")
             i += 1
 
+        # get name for budget to load
         budgetName = input("Enter the name of a budget to load.\n>>> ")
         while (budgetName not in getSavedBudgets()):
             budgetName = input("Invalid. Enter the name of a budget to load.\n>>> ")
+
+        # start new and set budget name
+        self.__cashFlows = []
+        self.__unsavedChanges = False
+        self.__activeBudget = budgetName
+
+        # parse relevant XML file and load to active budget
         filename = "savefiles/" + budgetName + ".xml"
         tree = ET.parse(filename)
         saveData = tree.getroot()
@@ -89,10 +155,9 @@ class uBudget:
             desc = cashFlow[2].text
             freq = cashFlow[3].text
             amount = float(cashFlow[4].text)
-            newCF = CashFlow()
-            newCF.loadValues(title=title, type=type, desc=desc, freq=freq, amount=amount)
+            newCF = CashFlow(title=title, type=type, desc=desc, freq=freq, amount=amount)
             self.__cashFlows.append(newCF)
-        self.__activeBudget = budgetName
+
         print("Budget loaded successfully.")
         input("Press enter to return to main menu.")
         clear()
@@ -100,13 +165,25 @@ class uBudget:
 
     def DisplayCFInfo(self) -> None:
         clear()
+
+        # if no cash flow data present
         if len(self.__cashFlows) == 0:
             print("No cash flow data to display.")
             input("Press enter to return to main menu.")
             clear()
             return
+        
+        # print cash flow data
         for cashFlow in self.__cashFlows:
             print(cashFlow)
+
+        monthlyIn, monthlyOut = sumFourWeeks(self.__cashFlows)
+        print(f"TOTAL INCOME: {GREEN}${round(monthlyIn,2)}{RESET}\nTOTAL SPENDING: {RED}${round(monthlyOut,2)}{RESET}")
+        netIn = monthlyIn - monthlyOut
+        if netIn > 0:
+            print(f"NET: {GREEN}${round(netIn,2)}{RESET}")
+        else:
+            print(f"NET: {RED}(${abs(round(netIn,2))}){RESET}")
         input("Press enter to return to main menu.")
         clear()
         return
@@ -120,12 +197,12 @@ class uBudget:
         clear()
         budgetName = self.__activeBudget
         if len(self.__cashFlows) == 0:
-            print("Budget does not contain any data!")
+            print(f"Active budget does not contain any data!")
             input("Press enter to return to the main menu.")
             clear()
             return
         if (budgetName in getSavedBudgets()):
-            if (input("Do you want to overwrite an existing budget with this name? (Y/N)\n>>> ") != "Y"):
+            if (input("Are you sure you want to overwrite? (Y/N)\n>>> ") != "Y"):
                 print("Failed to save budget.")
                 input("Press enter to return to the main menu.")
                 clear()
@@ -147,23 +224,9 @@ class uBudget:
         tree = ET.ElementTree(root)
         ET.indent(tree, space='\t', level=0)
         tree.write(filename, encoding="UTF-8")
-        print("Budget saved under", filename)
-        input("Press enter to return to the main menu.")
-        clear()
-        return
 
-    def ShowSavedBudgets(self) -> None:
-        clear()
-        print("--- SAVED BUDGETS ---")
-        if len(getSavedBudgets()) == 0:
-            print("No budgets saved.")
-            input("Press enter to return to the main menu.")
-            clear()
-            return
-        i = 1
-        for name in getSavedBudgets():
-            print(f"{i}. {name}")
-            i += 1
+        self.__unsavedChanges = False
+        print("Budget saved under", filename)
         input("Press enter to return to the main menu.")
         clear()
         return

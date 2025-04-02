@@ -1,0 +1,37 @@
+<myBudget2025>
+	<CashFlow>
+		<title>Paycheck</title>
+		<type>INCOME</type>
+		<desc>biweekly paid salary from job</desc>
+		<freq>BIWEEKLY</freq>
+		<amount>2300.0</amount>
+	</CashFlow>
+	<CashFlow>
+		<title>Rent</title>
+		<type>EXPENSE</type>
+		<desc>100 N High St rent</desc>
+		<freq>MONTHLY</freq>
+		<amount>990.0</amount>
+	</CashFlow>
+	<CashFlow>
+		<title>my Car</title>
+		<type>EXPENSE</type>
+		<desc>2027 Honda Civic Sport</desc>
+		<freq>MONTHLY</freq>
+		<amount>220.0</amount>
+	</CashFlow>
+	<CashFlow>
+		<title>Health Insurance</title>
+		<type>EXPENSE</type>
+		<desc>aetna medical</desc>
+		<freq>MONTHLY</freq>
+		<amount>189.0</amount>
+	</CashFlow>
+	<CashFlow>
+		<title>Paycheck2</title>
+		<type>INCOME</type>
+		<desc>mysterious secondary income</desc>
+		<freq>MONTHLY</freq>
+		<amount>7125.0</amount>
+	</CashFlow>
+</myBudget2025>

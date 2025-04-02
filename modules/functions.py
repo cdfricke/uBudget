@@ -1,6 +1,6 @@
 # Programmer: Connor Fricke (cd.fricke23@gmail.com)
 # File: functions.py
-# Lateste Revision: 7-Aug-2024
+# Lateste Revision: 1-April-2025
 # Description: Helper functions for uBudget program
 
 from modules.objects import *
@@ -8,7 +8,15 @@ import os
 import xml.etree.ElementTree as ET
 
 # *** BACKEND ***
-def addFlows(data: list):
+def listFlows(data: list[CashFlow]):
+    print("--- CASH FLOWS ---")
+    i = 1
+    for cashFlow in data:
+        color = GREEN if (cashFlow.type == "INCOME") else RED
+        print(f"{i}. {cashFlow.title} {color}({cashFlow.type}){RESET}")
+        i += 1
+
+def addFlows(data: list[CashFlow]):
     """
     Takes a single parameter which should be a list, either empty or already containing
     cashFlow type objects and prompts the user for information necessary to create new cashFlows
@@ -30,9 +38,9 @@ def addFlows(data: list):
         # get amount, no need to check validity
         amount = float(input("Amount:\n>>> "))
         # create CashFlow and add to list
-        newCF = CashFlow()
-        newCF.loadValues(type=type, title=title, desc=desc, freq=freq, amount=amount)
+        newCF = CashFlow(type=type, title=title, desc=desc, freq=freq, amount=amount)
         data.append(newCF)
+
 
 def sumFourWeeks(data: list[CashFlow]) -> tuple:
     """
