@@ -22,7 +22,9 @@ def addFlows(data: list[CashFlow]):
     cashFlow type objects and prompts the user for information necessary to create new cashFlows
     and adds them to the parameter list.
     """
-    while(input("Add cash flow? Y/N\n>>> ") == "Y"):
+    clear()
+    listFlows(data)
+    while(input("Add cash flow? (Y/N)\n>>> ") == "Y"):
         # get type, check validity
         type = input("Income or Expense?\n>>> ").upper()
         while (not type in cfTypes):
@@ -40,6 +42,23 @@ def addFlows(data: list[CashFlow]):
         # create CashFlow and add to list
         newCF = CashFlow(type=type, title=title, desc=desc, freq=freq, amount=amount)
         data.append(newCF)
+        clear()
+        listFlows(data)
+
+def removeFlows(data: list[CashFlow]):
+    """
+    Takes a single parameter which should be a list, either empty or already containing
+    cashFlow type objects and prompts the user for information necessary to remove cashFlows
+    from the parameter list.
+    """
+    clear()
+    listFlows(data)
+    while (input("Delete cash flow? (Y/N)\n>>> ") == "Y" and len(data) > 0):
+        deleteThis = int(input("Enter the number of a cash flow to delete.\n>>> "))
+        del data[deleteThis - 1]
+        clear()
+        listFlows(data)
+    return
 
 
 def sumFourWeeks(data: list[CashFlow]) -> tuple:

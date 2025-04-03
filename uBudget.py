@@ -41,6 +41,8 @@ class uBudget:
                 self.SaveBudget()       # RUN SUB-APP
                 menuSelect = self.Prompt()
             elif (menuSelect == 6):
+                if not self.__unsavedChanges:
+                    break
                 if input("Are you sure you want to quit? (Y/N)\n>>> ") == "Y":
                     break
                 clear()
@@ -57,8 +59,8 @@ class uBudget:
     def StartNew(self):
         clear()
 
-        # if active budget contains data
-        if len(self.__cashFlows) > 0:
+        # if active budget contains data and is unsaved
+        if len(self.__cashFlows) > 0 and self.__unsavedChanges:
             print("! WARNING ! This action will overwrite the active budget.")
             if (input("Are you sure you want to continue? (Y/N)\n>>> ") != "Y"):
                 print("Failed to create new budget.")
@@ -84,6 +86,26 @@ class uBudget:
     
         clear()
         return
+
+    def AddToBudget(self):
+        oldLength = len(self.__cashFlows)
+
+        # add flows until user is finished editing
+        addFlows(self.__cashFlows)
+        
+        # if new data is present
+        if len(self.__cashFlows) > oldLength:
+            self.__unsavedChanges = True
+
+    def RemoveFromBudget(self):
+        oldLength = len(self.__cashFlows)
+
+        # remove flows until user is finished editing
+        removeFlows(self.__cashFlows)
+        
+        # if data has been removed
+        if len(self.__cashFlows) < oldLength:
+            self.__unsavedChanges = True
     
     def EditBudget(self):
         clear()
@@ -94,15 +116,18 @@ class uBudget:
             input("Press enter to return to the main menu.")
             return
         
-        oldLength = len(self.__cashFlows)
-
-        # add flows until user is finished editing
         listFlows(self.__cashFlows)
-        addFlows(self.__cashFlows)
+        addOrDelete = input("Would you like to add or delete cash flows? (A/D)\n>>> ")
+        while (addOrDelete not in ["A", "D", "a", "d"]):
+            print("Invalid input. Try again.")
+            addOrDelete = input("Would you like to add or delete cash flows? (A/D)\n>>> ")
+
+        clear()
         
-        # if new data is present
-        if len(self.__cashFlows) > oldLength:
-            self.__unsavedChanges = True
+        if (addOrDelete in ["A", "a"]):
+            self.AddToBudget()
+        else:
+            self.RemoveFromBudget()
 
         clear()
         return
@@ -110,8 +135,8 @@ class uBudget:
     def LoadSaved(self):
         clear()
 
-        # if active budget contains data
-        if len(self.__cashFlows) > 0:
+        # if active budget contains data and is unsaved
+        if len(self.__cashFlows) > 0 and self.__unsavedChanges:
             print("! WARNING ! This action will overwrite the active budget.")
             if (input("Are you sure you want to continue? (Y/N)\n>>> ") != "Y"):
                 print("Failed to load budget.")

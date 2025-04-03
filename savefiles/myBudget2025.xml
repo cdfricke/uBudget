@@ -14,13 +14,6 @@
 		<amount>990.0</amount>
 	</CashFlow>
 	<CashFlow>
-		<title>my Car</title>
-		<type>EXPENSE</type>
-		<desc>2027 Honda Civic Sport</desc>
-		<freq>MONTHLY</freq>
-		<amount>220.0</amount>
-	</CashFlow>
-	<CashFlow>
 		<title>Health Insurance</title>
 		<type>EXPENSE</type>
 		<desc>aetna medical</desc>
