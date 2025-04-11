@@ -75,6 +75,7 @@ class uBudget:
         while (newName == self.__activeBudget):
             print("This budget is already active!")
             newName = input("Enter budget name.\n>>> ")
+        self.__activeBudget = newName
         
         # start new and add cash flows
         self.__cashFlows = []
